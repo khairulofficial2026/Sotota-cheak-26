@@ -1,9 +1,7 @@
 /* A4 পেজ সাইজ অপটিমাইজেশন প্রিন্টিংয়ের জন্য */
 @page {
   size: A4;
-  margin: 8mm;
-  orphans: 3;
-  widows: 3;
+  margin: 5mm; /* মার্জিন কমিয়ে ৫ মিলিমিটার করা হলো যাতে এক পেজে থাকে */
 }
 
 :root{
@@ -12,43 +10,51 @@
   --gold:#f4c531;
   --red:#e8384f;
   --ink:#1c2b26;
-  --muted:#0a0101;
-  --bg:#eef2f0;
+  --muted:#5a6b65;
+  --bg: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   --card:#ffffff;
-  --line:#0c0f12;
-  --radius:22px;
+  --line:#d0ded9;
+  --radius:24px;
   --merit-blue:#0d0661;
   --merit-gold:#d4a574;
+  --smooth-spring: cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 *{box-sizing:border-box;}
-html,body{margin:0;padding:0;overflow-x:hidden;max-width:100%;line-height:1.3;}
+html,body{margin:0;padding:0;overflow-x:hidden;max-width:100%;line-height:1.4;}
 body{
   font-family:'Hind Siliguri',sans-serif;
-  background:var(--bg);
+  background: var(--bg);
+  background-attachment: fixed;
   color:var(--ink);
+  min-height: 100vh;
   -webkit-font-smoothing:antialiased;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Hero */
 .hero{
-  background:linear-gradient(115deg,var(--green) 0%,var(--teal-blue) 100%);
+  background:linear-gradient(135deg,var(--green) 0%,var(--teal-blue) 100%);
   color:#fff;
   text-align:center;
-  padding:36px 20px 30px;
+  padding:40px 20px 32px;
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+  box-shadow: 0 10px 30px rgba(26,156,91,0.2);
 }
 .hero-cap{margin-bottom:8px;}
-.hero-cap svg{filter:drop-shadow(0 2px 3px rgba(0,0,0,.15));}
+.hero-cap svg{filter:drop-shadow(0 4px 6px rgba(0,0,0,.2)); transition: transform 0.4s var(--smooth-spring);}
+.hero-cap svg:hover { transform: scale(1.08); }
 .hero h1{
   font-family:'Baloo Da 2',sans-serif;
-  font-size:1.75rem;
+  font-size:1.85rem;
   font-weight:800;
   margin:4px 0 8px;
-  text-shadow:0 1px 2px rgba(0,0,0,.1);
+  text-shadow:0 2px 4px rgba(0,0,0,.15);
 }
 .hero p{
   margin:0;
-  font-size:.95rem;
+  font-size:1rem;
   font-weight:500;
   opacity:.95;
 }
@@ -57,13 +63,18 @@ body{
 .ticker{
   display:flex;align-items:stretch;
   overflow:hidden;
-  font-size:.85rem;
+  font-size:.88rem;
+  border-radius: 50px;
+  margin: 16px 16px 0;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 .ticker-badge{
   background:var(--red);color:#fff;
-  padding:10px 14px;flex-shrink:0;
+  padding:10px 16px;flex-shrink:0;
   font-weight:700;white-space:nowrap;
   display:flex;align-items:center;
+  border-top-left-radius: 50px;
+  border-bottom-left-radius: 50px;
 }
 .ticker-track{
   overflow:hidden;white-space:nowrap;flex:1;
@@ -73,23 +84,47 @@ body{
 .ticker-track span{
   display:inline-block;padding-left:100%;
   font-weight:700;color:#3a2a00;
-  animation:scrollLeft 20s linear infinite;
+  animation:scrollLeft 22s linear infinite;
 }
 @keyframes scrollLeft{
   0%{transform:translateX(0);}
   100%{transform:translateX(-100%);}
 }
 
-/* Page switching */
-.page{display:none;}
-.page.active{display:block;}
+/* Page switching with Smooth Fade & Slide Transition */
+.page{
+  display:none;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.4s ease, transform 0.4s var(--smooth-spring);
+}
+.page.active{
+  display:block;
+  opacity: 1;
+  transform: translateY(0);
+  animation: pageIn 0.45s var(--smooth-spring) forwards;
+}
+
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
 .btn-back{
   display:inline-flex;align-items:center;gap:6px;
-  margin:20px 0 6px;padding:10px 18px;
-  border:1.5px solid var(--line);border-radius:12px;
-  background:#fff;color:#0f8a52;font-weight:700;font-size:.88rem;
+  margin:20px 0 10px;padding:10px 18px;
+  border:1.5px solid var(--line);border-radius:14px;
+  background:rgba(255,255,255,0.9); backdrop-filter: blur(10px);
+  color:#0f8a52;font-weight:700;font-size:.9rem;
   font-family:'Hind Siliguri',sans-serif;cursor:pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  transition: all 0.3s var(--smooth-spring);
+}
+.btn-back:hover {
+  background: #fff;
+  border-color: var(--green);
+  transform: translateX(-3px);
+  box-shadow: 0 6px 16px rgba(15,138,82,0.15);
 }
 .btn-back:active{transform:scale(.97);}
 
@@ -97,106 +132,147 @@ body{
 .wrap{
   max-width:520px;
   margin:0 auto;
-  padding:36px 16px 40px;
+  padding:24px 16px 48px;
 }
-/* রেজাল্ট পেইজ A4-এর কাছাকাছি প্রশস্ত রাখা হয়েছে, যাতে কার্ডটি ছোট বাক্সের মতো না লাগে */
 .wrap-report{
   max-width:780px;
-  padding:28px 16px 40px;
+  padding:20px 16px 48px;
 }
 .card{
-  background:var(--card);
-  border-radius:var(--radius);
-  box-shadow:0 16px 40px rgba(20,60,50,.14);
-  padding:32px 24px;
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: 0 20px 50px rgba(20,60,50,0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.8);
+  padding:32px 26px;
   margin-bottom:20px;
+  transition: transform 0.35s var(--smooth-spring), box-shadow 0.35s var(--smooth-spring);
+}
+.card:hover {
+  box-shadow: 0 25px 60px rgba(20,60,50,0.14);
 }
 .card-title{
   font-family:'Hind Siliguri',sans-serif;
-  font-weight:700;font-size:1.3rem;
+  font-weight:700;font-size:1.35rem;
   color:#158a4e;
   text-align:center;margin-bottom:24px;
 }
-.star{color:var(--gold);margin-right:4px;}
+.star{color:var(--gold);margin-right:4px; display: inline-block; animation: pulseStar 2s infinite ease-in-out;}
+@keyframes pulseStar {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
 
 .field-label{
-  display:block;font-size:.82rem;font-weight:700;
+  display:block;font-size:.85rem;font-weight:700;
   color:var(--muted);margin:16px 0 8px;
+  transition: color 0.2s ease;
 }
 .input{
-  width:100%;padding:15px 16px;
-  border:1.5px solid var(--line);border-radius:14px;
-  font-size:1rem;font-family:'Hind Siliguri',sans-serif;
+  width:100%;padding:15px 18px;
+  border:2px solid var(--line);border-radius:16px;
+  font-size:1.02rem;font-family:'Hind Siliguri',sans-serif;
   background:#fbfdfc;color:var(--ink);
   font-weight:600;
   appearance:none;
   -webkit-appearance:none;
+  transition: all 0.3s var(--smooth-spring);
 }
 select.input{
-  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237a8a84' stroke-width='2'><path d='M6 9l6 6 6-6'/></svg>");
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237a8a84' stroke-width='2.5'><path d='M6 9l6 6 6-6'/></svg>");
   background-repeat:no-repeat;
-  background-position:right 14px center;
-  padding-right:38px;
+  background-position:right 16px center;
+  padding-right:42px;
+  cursor: pointer;
 }
-.input:focus{outline:none;border-color:var(--green);}
+.input:focus{
+  outline:none;
+  border-color:var(--green);
+  background:#fff;
+  box-shadow: 0 0 0 4px rgba(26,156,91,0.12);
+  transform: translateY(-1px);
+}
 
 .btn-primary{
-  width:100%;margin-top:26px;padding:16px;
-  border:none;border-radius:14px;
+  width:100%;margin-top:28px;padding:16px;
+  border:none;border-radius:16px;
   background:linear-gradient(135deg,#0d8a52,#0a7a48);
-  color:#fff;font-size:1.05rem;font-weight:700;
+  color:#fff;font-size:1.08rem;font-weight:700;
   font-family:'Hind Siliguri',sans-serif;
   cursor:pointer;
-  box-shadow:0 8px 18px rgba(10,122,72,.3);
+  box-shadow:0 10px 25px rgba(10,122,72,0.3);
   display:flex;align-items:center;justify-content:center;gap:8px;
+  transition: all 0.3s var(--smooth-spring);
 }
-.btn-primary:active{transform:scale(.98);}
-.btn-primary:disabled{opacity:.6;}
+.btn-primary:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(10,122,72,0.4);
+  background:linear-gradient(135deg,#0fa35f,#0d8a52);
+}
+.btn-primary:active{transform:scale(.97);}
+.btn-primary:disabled{opacity:.6; transform: none; box-shadow: none;}
 
-/* ভর্তি ফরম বাটনের আইকন ছোট করা */
 .btn-primary .icon{
-  font-size:0.9rem;
+  font-size:0.95rem;
+  transition: transform 0.3s var(--smooth-spring);
+}
+.btn-primary:hover .icon {
+  transform: scale(1.2) rotate(10deg);
 }
 
 .status-msg{
-  text-align:center;font-size:.85rem;margin:16px 0 0;
+  text-align:center;font-size:.88rem;margin:16px 0 0;
   color:var(--red);font-weight:600;min-height:1em;
+  animation: shakeMsg 0.4s ease;
+}
+@keyframes shakeMsg {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
 }
 
-/* Result report card — reference-image style, sized to fill an A4 page nicely */
+/* Result report card */
 .result-card.hidden{display:none;}
 .result-card{padding:0;background:transparent;box-shadow:none;}
 .report-outer{
   background:var(--card);
-  border:1px solid var(--line);
-  border-radius:14px;
-  padding:22px;
-  box-shadow:0 16px 40px rgba(20,60,50,.14);
+  border:1px solid rgba(255,255,255,0.9);
+  border-radius:20px;
+  padding:24px;
+  box-shadow:0 20px 50px rgba(20,60,50,0.12);
   page-break-inside:avoid;
   break-inside:avoid;
+  animation: scaleUpCard 0.4s var(--smooth-spring);
 }
+@keyframes scaleUpCard {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+
 .report-inner{
   border:3px solid #17a06f;
-  border-radius:10px;
-  padding:22px 28px;
+  border-radius:14px;
+  padding:24px 30px;
   position:relative;
   page-break-inside:avoid;
   break-inside:avoid;
+  background: #fff;
+  font-family: 'Hind Siliguri', sans-serif;
 }
 
-/* টপবার: ছবি বক্স | স্কুলের নাম | রেজাল্ট স্ট্যাম্প */
 .report-topbar{
   display:flex;align-items:center;gap:18px;
-  margin-bottom:10px;
+  margin-bottom:12px;
 }
 .photo-box{
   flex-shrink:0;
-  width:88px;height:92px;
-  border:2px solid var(--ink);
-  border-radius:6px;
+  width:90px;height:94px;
+  border:2.5px solid var(--ink);
+  border-radius:8px;
   background:#fbfdfc;
   display:flex;align-items:center;justify-content:center;
   overflow:hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 .photo-box img{
   width:100%;height:100%;
@@ -205,136 +281,146 @@ select.input{
 }
 .report-header{flex:1;text-align:center;min-width:0;}
 .report-header h2{
-  font-family:'Baloo Da 2',sans-serif;
-  color:#0f8a52;font-size:1.9rem;margin:0 0 4px;
+  font-family:'Baloo Da 2',cursive;
+  color:#0f8a52;font-size:2rem;margin:0 0 2px;
+  letter-spacing: -0.5px;
 }
-.report-address{font-size:.92rem;color:#3a4a44;margin:0 0 3px;}
-.report-meta{font-size:.88rem;color:var(--muted);margin:0;font-weight:600;}
+.report-address{font-size:.94rem;color:#3a4a44;margin:0 0 3px;}
+.report-meta{font-size:.9rem;color:var(--muted);margin:0;font-weight:600;}
 
-/* ফলাফল + মেরিট একসাথে একটি স্ট্যাম্প-এ */
 .stamp-combo{
   flex-shrink:0;
-  width:112px;
-  border:2px dashed;border-radius:50%;
+  width:116px;
+  border:2.5px dashed;border-radius:50%;
   padding:14px 8px;text-align:center;
   line-height:1.15;
   font-family:'JetBrains Mono',monospace;
+  animation: rotateStamp 10s linear infinite;
 }
 .stamp-combo span{display:block;font-size:.62rem;font-weight:700;letter-spacing:.6px;}
-.stamp-combo strong{display:block;font-size:.92rem;letter-spacing:.3px;margin-top:1px;}
+.stamp-combo strong{display:block;font-size:.95rem;letter-spacing:.3px;margin-top:1px;}
 .stamp-combo em{
   display:block;margin-top:5px;font-style:normal;
   font-size:.56rem;font-weight:800;letter-spacing:.2px;
-  background:var(--merit-blue);color:#fff;border-radius:5px;padding:2px 3px;
-  -webkit-print-color-adjust:exact;print-color-adjust:exact;color-adjust:exact;
+  background:var(--merit-blue);color:#fff;border-radius:5px;padding:2px 4px;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact;
 }
 .stamp-combo.pass{border-color:#17a06f;color:#0f8a52;}
 .stamp-combo.fail{border-color:var(--red);color:var(--red);}
 
-/* সেকশন টাইটেল: Student Information / Grade Sheet */
 .section-title{
   text-align:center;
-  font-family:'Baloo Da 2',sans-serif;
+  font-family:'Baloo Da 2',cursive;
   font-style:italic;
   font-weight:700;
-  font-size:1.2rem;
+  font-size:1.25rem;
   color:var(--ink);
   text-decoration:underline;
-  text-underline-offset:4px;
-  margin:14px 0 8px;
+  text-underline-offset:6px;
+  margin:16px 0 10px;
 }
 
-/* শিক্ষার্থীর তথ্য টেবিল */
 .info-table{
   width:100%;border-collapse:collapse;
-  margin-bottom:4px;
+  margin-bottom:6px;
   page-break-inside:avoid;
   break-inside:avoid;
 }
 .info-table td{
-  border:1.5px solid var(--ink);
-  padding:9px 16px;
+  border:1.5px solid var(--line);
+  padding:10px 16px;
   width:50%;
   vertical-align:middle;
+  background: #fafcfb;
 }
 .info-label{
-  font-size:.86rem;color:var(--muted);font-weight:700;
+  font-size:.88rem;color:var(--muted);font-weight:700;
   margin-right:6px;
 }
 .info-value{
-  font-size:1.05rem;color:#0f8a52;font-weight:700;
+  font-size:1.06rem;color:#0f8a52;font-weight:700;
 }
 
 .table-scroll{
   width:100%;
   overflow-x:auto;
   -webkit-overflow-scrolling:touch;
-  margin:6px 0;
+  margin:8px 0;
   page-break-inside:avoid;
   break-inside:avoid;
 }
-.marks-table{width:100%;min-width:0;border-collapse:collapse;font-size:.94rem;line-height:1.3;}
+.marks-table{width:100%;min-width:0;border-collapse:collapse;font-size:.96rem;line-height:1.3;}
 .marks-table th{
   text-align:center;background:#0f8a52;color:#fff;
-  padding:8px 6px;font-weight:700;font-size:.8rem;
-  letter-spacing:.2px;border:1px solid #0a6e3f;
+  padding:9px 6px;font-weight:700;font-size:.82rem;
+  letter-spacing:.3px;border:1px solid #0a6e3f;
 }
-.marks-table td{padding:5px 6px;border:1px solid var(--line);text-align:center;line-height:1.2;}
-.marks-table td.subj-name,.marks-table th:first-child{text-align:left;}
-.marks-table tr:nth-child(even){background:#f7fbfa;}
-.marks-table tfoot tr{font-weight:800;border-top:2px solid var(--ink);}
-.marks-table tfoot td{padding:8px 6px;border:1px solid var(--line);}
+.marks-table td{padding:6px;border:1px solid var(--line);text-align:center;line-height:1.25;}
+.marks-table td.subj-name,.marks-table th:first-child{text-align:left; padding-left:10px;}
+.marks-table tr:nth-child(even){background:#f4f9f7;}
+.marks-table tr:hover { background: rgba(26,156,91,0.04); transition: background 0.2s ease; }
+.marks-table tfoot tr{font-weight:800;border-top:2.5px solid var(--ink); background: #edf5f2;}
+.marks-table tfoot td{padding:9px 6px;border:1px solid var(--line);}
 
 .cell-pass{color:#0a8a4a;font-weight:700;}
 .cell-fail{color:var(--red);font-weight:700;}
 
 .grade-scale{
-  font-size:.78rem;color:var(--muted);text-align:center;
-  margin:6px 0;line-height:1.25;
+  font-size:.8rem;color:var(--muted);text-align:center;
+  margin:8px 0;line-height:1.3;
 }
 
 .remarks-box{
-  margin:6px 0;padding:12px 16px;min-height:48px;
+  margin:8px 0;padding:12px 16px;min-height:50px;
   border:2px solid var(--ink);
-  border-radius:6px;font-size:1rem;
+  border-radius:8px;font-size:1.02rem;
   page-break-inside:avoid;
   break-inside:avoid;
-  line-height:1.3;
+  line-height:1.35;
+  background: #fbfdfc;
 }
 .remarks-box span{font-weight:700;color:var(--ink);}
-.remarks-box em{color:#3a4a44;font-style:normal;display:block;margin-top:3px;line-height:1.3;}
+.remarks-box em{color:#2e3d37;font-style:normal;display:block;margin-top:4px;line-height:1.35;}
 
-/* স্বাক্ষরের জন্য যথেষ্ট ফাঁকা জায়গা রাখা হয়েছে লাইনের ওপরে */
 .sign-row{
   display:flex;justify-content:space-between;
-  margin:48px 0 4px;gap:16px;flex-wrap:wrap;
+  margin:50px 0 6px;gap:16px;flex-wrap:wrap;
   page-break-inside:avoid;
   break-inside:avoid;
 }
 .sign-row div{
   flex:1;min-width:110px;text-align:center;
-  font-size:.85rem;color:var(--muted);line-height:1;
+  font-size:.88rem;color:var(--muted);line-height:1.1;
 }
 .sign-line{
-  display:block;border-top:1.5px solid var(--ink);
-  margin-bottom:8px;
+  display:block;border-top:2px solid var(--ink);
+  margin-bottom:10px;
 }
 
 .report-footer{
   display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;
-  font-size:.7rem;color:#a3b0ab;
-  border-top:1px solid var(--line);padding-top:5px;margin-top:8px;
+  font-size:.72rem;color:#8fa39b;
+  border-top:1px solid var(--line);padding-top:6px;margin-top:10px;
 }
 
-/* Bengali Number Font Customization */
-/* এই ক্লাস গুলোতে শুধু বাংলা সংখ্যা (০,১,২,৩...) এর জন্য কাস্টম ফন্ট */
 .bn-number {
   font-family: 'Tiro Bangla', serif;
 }
+.bn-number.tiro-bangla-font {
+  font-family: 'Tiro Bangla', serif;
+  font-weight: 400;
+}
+.bn-number.hind-siliguri-font {
+  font-family: 'Hind Siliguri', sans-serif;
+  font-weight: 600;
+}
+.bn-number.baloo-da-2-font {
+  font-family: 'Baloo Da 2', cursive;
+  font-weight: 700;
+}
 
-/* ডাউনলোড/প্রিন্ট বাটন */
 .result-actions{
-  display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;
+  display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;
 }
 .result-actions .btn-primary,
 .result-actions .btn-secondary{
@@ -342,135 +428,146 @@ select.input{
 }
 .btn-secondary{
   padding:16px;
-  border:1.5px solid #0f8a52;border-radius:14px;
-  background:#fff;color:#0f8a52;font-size:1.05rem;font-weight:700;
+  border:2px solid #0f8a52;border-radius:16px;
+  background:#fff;color:#0f8a52;font-size:1.08rem;font-weight:700;
   font-family:'Hind Siliguri',sans-serif;cursor:pointer;
   display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow: 0 6px 20px rgba(15,138,82,0.1);
+  transition: all 0.3s var(--smooth-spring);
 }
-.btn-secondary:active{transform:scale(.98);}
+.btn-secondary:hover{
+  background: #f0faf5;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(15,138,82,0.2);
+}
+.btn-secondary:active{transform:scale(.97);}
 
+/* আপডেটকৃত প্রিন্ট স্টাইলশিট যা সম্পূর্ণ এক পেজে রাখবে */
 @media print{
-  *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important;}
-  .no-print{display:none !important;}
-  body{background:#fff;padding:0;margin:0;}
-  .wrap{padding:0;max-width:100%;margin:0;}
-  .report-outer{
-    box-shadow:none;border:none;padding:0;
-    page-break-inside:avoid;
-    break-inside:avoid;
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
   }
-  .report-inner{
-    border:2px solid #17a06f;
-    page-break-inside:avoid;
-    break-inside:avoid;
+  .no-print { display: none !important; }
+  
+  body {
+    background: #fff;
+    padding: 0;
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
   }
-  .marks-table{page-break-inside:avoid;break-inside:avoid;}
-  .remarks-box{page-break-inside:avoid;break-inside:avoid;}
-  .sign-row{page-break-inside:avoid;break-inside:avoid;}
-  .card{box-shadow:none;}
+  
+  .wrap, .wrap-report {
+    padding: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+  
+  .report-outer {
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  
+  .report-inner {
+    border: 2px solid #17a06f !important;
+    padding: 10px 14px !important;
+    margin: 0 !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .marks-table td, .marks-table th {
+    padding: 4px 6px !important;
+    font-size: 0.85rem !important;
+  }
+
+  .sign-row {
+    margin-top: 25px !important;
+  }
+
+  .marks-table { page-break-inside: avoid; break-inside: avoid; }
+  .remarks-box { page-break-inside: avoid; break-inside: avoid; }
+  .sign-row { page-break-inside: avoid; break-inside: avoid; }
+  .card { box-shadow: none !important; border: none !important; }
 }
  
-.footer{text-align:center;padding:20px;font-size:.78rem;color:var(--muted);}
+.footer{text-align:center;padding:24px;font-size:.82rem;color:var(--muted);}
 
 @media (max-width:600px){
   .report-inner{padding:16px 14px;}
-  .report-header h2{font-size:1.3rem;}
-  .report-address{font-size:.72rem;}
-  .report-meta{font-size:.68rem;}
+  .report-header h2{font-size:1.4rem;}
+  .report-address{font-size:.75rem;}
+  .report-meta{font-size:.7rem;}
   .report-topbar{gap:8px;}
-  .photo-box{width:60px;height:62px;}
-  .stamp-combo{width:78px;padding:8px 5px;}
+  .photo-box{width:65px;height:68px;}
+  .stamp-combo{width:80px;padding:8px 4px;}
   .stamp-combo span{font-size:.46rem;}
-  .stamp-combo strong{font-size:.66rem;}
+  .stamp-combo strong{font-size:.68rem;}
   .stamp-combo em{font-size:.42rem;}
-  .section-title{font-size:1rem;margin:14px 0 8px;}
-  .info-table td{padding:7px 9px;}
-  .info-label{font-size:.66rem;}
-  .info-value{font-size:.82rem;}
-  .marks-table{font-size:.66rem;}
-  .marks-table th,.marks-table td{padding:5px 3px;}
-  .remarks-box{padding:10px 12px;font-size:.78rem;}
-  .sign-row{margin-top:34px;}
-  .sign-row div{font-size:.66rem;min-width:70px;}
+  .section-title{font-size:1.05rem;margin:14px 0 8px;}
+  .info-table td{padding:8px 10px;}
+  .info-label{font-size:.7rem;}
+  .info-value{font-size:.85rem;}
+  .marks-table{font-size:.7rem;}
+  .marks-table th,.marks-table td{padding:6px 4px;}
+  .remarks-box{padding:10px 12px;font-size:.82rem;}
+  .sign-row{margin-top:36px;}
+  .sign-row div{font-size:.7rem;min-width:70px;}
   .result-actions{flex-direction:column;}
 }
 
 .hidden{display:none !important;}
 
 /* পরীক্ষার রুটিন পেইজ */
-.routine-header{text-align:center;margin-bottom:14px;}
+.routine-header{text-align:center;margin-bottom:16px;}
 .routine-header h2{
-  font-family:'Baloo Da 2',sans-serif;
-  color:#0f8a52;font-size:1.5rem;margin:0 0 4px;
+  font-family:'Baloo Da 2',cursive;
+  color:#0f8a52;font-size:1.6rem;margin:0 0 4px;
 }
-.routine-title{font-size:.95rem;color:var(--ink);font-weight:700;margin:0;}
+.routine-title{font-size:1rem;color:var(--ink);font-weight:700;margin:0;}
 
-.routine-table{width:100%;min-width:760px;border-collapse:collapse;font-size:.78rem;line-height:1.25;}
+.routine-table{width:100%;min-width:760px;border-collapse:collapse;font-size:.82rem;line-height:1.3;}
 .routine-table th{
   text-align:center;background:#0f8a52;color:#fff;
-  padding:8px 6px;font-weight:700;font-size:.72rem;
+  padding:9px 6px;font-weight:700;font-size:.75rem;
   border:1px solid #0a6e3f;
 }
-.routine-table td{padding:7px 6px;border:1px solid var(--line);text-align:center;}
-.routine-table td.subj-name{font-weight:700;color:#0f8a52;background:#f7fbfa;}
-.routine-table tr:nth-child(even){background:#f7fbfa;}
+.routine-table td{padding:8px 6px;border:1px solid var(--line);text-align:center;}
+.routine-table td.subj-name{font-weight:700;color:#0f8a52;background:#f4f9f7;}
+.routine-table tr:nth-child(even){background:#f4f9f7;}
 
 .routine-rules{
-  margin-top:18px;padding:14px 16px;
-  border:1.5px solid var(--ink);border-radius:6px;
+  margin-top:20px;padding:16px 18px;
+  border:2px solid var(--ink);border-radius:10px;
+  background: #fbfdfc;
 }
 .routine-rules h3{
-  font-family:'Baloo Da 2',sans-serif;
-  font-size:1rem;margin:0 0 8px;color:var(--ink);
-  text-decoration:underline;text-underline-offset:3px;
+  font-family:'Baloo Da 2',cursive;
+  font-size:1.05rem;margin:0 0 8px;color:var(--ink);
+  text-decoration:underline;text-underline-offset:4px;
 }
 .routine-rules ol{margin:0;padding-left:20px;}
-.routine-rules li{font-size:.82rem;line-height:1.5;margin-bottom:6px;color:#3a4a44;}
+.routine-rules li{font-size:.85rem;line-height:1.5;margin-bottom:6px;color:#3a4a44;}
 
 @media (max-width:600px){
-  .routine-header h2{font-size:1.1rem;}
-  .routine-title{font-size:.78rem;}
-  .routine-table{font-size:.68rem;}
-  .routine-table th,.routine-table td{padding:5px 4px;}
-  .routine-rules li{font-size:.72rem;}
+  .routine-header h2{font-size:1.2rem;}
+  .routine-title{font-size:.82rem;}
+  .routine-table{font-size:.7rem;}
+  .routine-table th,.routine-table td{padding:6px 4px;}
+  .routine-rules li{font-size:.75rem;}
 }
 
-/* একাধিক রেজাল্ট কার্ড প্রিন্টের জন্য (এডমিন প্যানেল) */
 #adminPrintArea{margin-top:20px;}
 .print-page{margin-bottom:24px;}
 @media print{
   .print-page{page-break-after:always;}
   .print-page:last-child{page-break-after:auto;}
-}
-
-/* রেজাল্ট কার্ডের সব বাংলা টেক্সট Hind Siliguri এ */
-.report-inner {
-  font-family: 'Hind Siliguri', sans-serif;
-}
-
-/* Bengali Number Font Customization */
-/* শুধু বাংলা সংখ্যা (०,१,२,३...) এর জন্য কাস্টম ফন্ট */
-.bn-number {
-  font-family: 'Tiro Bangla', serif;
-}
-
-/* বাংলা সংখ্যার বিভিন্ন ফন্ট অপশন */
-.bn-number.tiro-bangla-font {
-  font-family: 'Tiro Bangla', serif;
-  font-weight: 400;
-}
-
-.bn-number.hind-siliguri-font {
-  font-family: 'Hind Siliguri', sans-serif;
-  font-weight: 600;
-}
-
-.bn-number.baloo-da-2-font {
-  font-family: 'Baloo Da 2', sans-serif;
-  font-weight: 700;
-}
-
-/* কাস্টম ফন্টের জন্য স্পেস (যদি ইউজ করতে চাও) */
-.bn-number.custom-font {
-  font-family: 'Custom Bangla Font', serif;
 }
