@@ -398,7 +398,6 @@ function parseOneSheet(url){
         if(done) return;
         done = true;
         clearTimeout(timer);
-        console.log("✅ Sheet loaded successfully:", url, "Rows found:", results.data.length);
         const rows = results.data.map(row => {
           const clean = {};
           Object.keys(row).forEach(k => clean[norm(k)] = String(row[k] || "").trim());
@@ -406,11 +405,10 @@ function parseOneSheet(url){
         });
         resolve(rows);
       },
-      error: function(error){
+      error: function(){
         if(done) return;
         done = true;
         clearTimeout(timer);
-        console.error("❌ Sheet load error:", url, error);
         resolve([]); // এই শীটে সমস্যা হলে বাকিগুলো লোড হতে থাকুক
       }
     });
@@ -419,10 +417,8 @@ function parseOneSheet(url){
 
 async function loadData(){
   const validUrls = (SHEET_CSV_URLS || []).filter(u => u && !u.includes("PASTE_"));
-  console.log("🔍 Starting data load. Valid sheet URLs:", validUrls.length);
 
   if(validUrls.length === 0){
-    console.error("❌ No valid sheet URLs found!");
     classSelect.innerHTML = `<option value="">⚠️ config.js এ শীট লিংক বসান</option>`;
     return;
   }
@@ -431,12 +427,8 @@ async function loadData(){
 
   const results = await Promise.all(validUrls.map(parseOneSheet));
   allRows = results.flat();
-  
-  console.log("📊 Total rows loaded:", allRows.length);
-  console.log("📝 Sample data:", allRows.slice(0, 2));
 
   if(allRows.length === 0){
-    console.error("❌ No data loaded from sheets!");
     classSelect.innerHTML = `<option value="">⚠️ লোড ব্যর্থ হয়েছে, নিচে ক্লিক করুন</option><option value="__retry__">🔄 আবার চেষ্টা করুন</option>`;
     return;
   }
@@ -445,7 +437,6 @@ async function loadData(){
 
   populateClasses(classSelect);
   populateClasses(adminClassSelect, true);
-  console.log("✨ Data load complete!");
 }
 
 classSelect.addEventListener("change", () => {
@@ -679,6 +670,54 @@ async function downloadCurrentReportPDF(){
     downloadBtn.disabled = false;
   }
 }
+
+// ============ প্রিন্টে সবসময় ঠিক ১টি A4 পেইজ নিশ্চিত করা ============
+// style.css এর @page { margin: 8mm; } অনুযায়ী A4 (297mm) থেকে উপরে-নিচে ৮mm করে বাদ দিলে
+// ব্যবহারযোগ্য উচ্চতা থাকে ২৮১mm। কনটেন্ট (বিষয় সংখ্যা ভেদে) এর চেয়ে বড় হলে,
+// পুরো কার্ডটি অনুপাত ঠিক রেখে ছোট করে ১ পেইজেই বসিয়ে দেওয়া হয় — যাতে
+// এক শিক্ষার্থীর রেজাল্ট কখনো ২ পেইজে না ছড়িয়ে পড়ে (একক প্রিন্ট ও এডমিনের
+// সব রেজাল্ট প্রিন্ট — উভয় ক্ষেত্রেই প্রযোজ্য)।
+const PRINT_PAGE_HEIGHT_MM = 281;
+const MM_TO_PX = 96 / 25.4;
+
+function fitCardToOnePage(card){
+  if(!card) return;
+  // আগের কোনো স্কেলিং থাকলে রিসেট করে আসল উচ্চতা মাপা হচ্ছে
+  card.style.transform = "";
+  card.style.marginBottom = "";
+  card.style.transformOrigin = "top center";
+
+  const naturalHeight = card.scrollHeight;
+  const maxHeightPx = PRINT_PAGE_HEIGHT_MM * MM_TO_PX;
+
+  if(naturalHeight > maxHeightPx){
+    const scale = maxHeightPx / naturalHeight;
+    const shrink = naturalHeight - (naturalHeight * scale);
+    card.style.transform = `scale(${scale})`;
+    // transform শুধু ভিজ্যুয়ালি ছোট করে, লেআউটে জায়গা একই থাকে —
+    // তাই নিচে যতটুকু ফাঁকা জায়গা তৈরি হলো, ততটুকু নেগেটিভ মার্জিন দিয়ে
+    // তুলে নেওয়া হচ্ছে, যাতে পেইজ ব্রেক ক্যালকুলেশনও ১ পেইজেই মিলে যায়
+    card.style.marginBottom = `-${shrink}px`;
+  }
+}
+
+function fitAllPrintCards(){
+  document.querySelectorAll("#reportContainer .report-outer, #adminPrintArea .report-outer")
+    .forEach(fitCardToOnePage);
+}
+
+function resetPrintCardFit(){
+  document.querySelectorAll("#reportContainer .report-outer, #adminPrintArea .report-outer")
+    .forEach(card => {
+      card.style.transform = "";
+      card.style.marginBottom = "";
+    });
+}
+
+// window.print() যেভাবেই কল হোক (বাটন ক্লিক, Ctrl+P, এডমিন বাল্ক প্রিন্ট) —
+// beforeprint সবসময় ট্রিগার হয়, তাই এখানে একবার বসালেই সব জায়গায় কাজ করবে
+window.addEventListener("beforeprint", fitAllPrintCards);
+window.addEventListener("afterprint", resetPrintCardFit);
 
 // ============ ইভেন্ট লিসেনার ============
 searchBtn.addEventListener("click", searchResult);
