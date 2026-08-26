@@ -80,9 +80,20 @@ body{
   100%{transform:translateX(-100%);}
 }
 
-/* Page switching */
+/* Page switching — প্রফেশনাল ট্রানজিশন অ্যানিমেশন */
 .page{display:none;}
-.page.active{display:block;}
+.page.active{
+  display:block;
+  animation:pageEnter .5s cubic-bezier(0.22,1,0.36,1) both;
+}
+@keyframes pageEnter{
+  0%{opacity:0;transform:translateY(18px) scale(.985);}
+  100%{opacity:1;transform:translateY(0) scale(1);}
+}
+/* প্রিন্টের সময় অ্যানিমেশন বন্ধ রাখা হবে, নাহলে প্রিন্ট আউটপুটে সমস্যা হতে পারে */
+@media print{
+  .page.active{animation:none !important;transform:none !important;opacity:1 !important;}
+}
 
 .btn-back{
   display:inline-flex;align-items:center;gap:6px;
