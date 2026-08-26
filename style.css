@@ -369,15 +369,21 @@ select.input{
     box-shadow:none;border:none;padding:0;
     page-break-inside:avoid;
     break-inside:avoid;
+    min-height:281mm;
+    display:flex;
+    flex-direction:column;
   }
   .report-inner{
     border:2px solid #17a06f;
     page-break-inside:avoid;
     break-inside:avoid;
+    display:flex;
+    flex-direction:column;
+    flex:1;
   }
   .marks-table{page-break-inside:avoid;break-inside:avoid;}
   .remarks-box{page-break-inside:avoid;break-inside:avoid;}
-  .sign-row{page-break-inside:avoid;break-inside:avoid;}
+  .sign-row{page-break-inside:avoid;break-inside:avoid;margin-top:auto;}
   .card{box-shadow:none;}
 }
  
