@@ -61,6 +61,13 @@ function norm(key){
   return String(key || "").trim().toLowerCase();
 }
 
+function getSubjectDensityClass(subjectCount){
+  if(subjectCount >= 18) return "subjects-18";
+  if(subjectCount >= 15) return "subjects-15";
+  if(subjectCount >= 12) return "subjects-12";
+  return "subjects-normal";
+}
+
 // র‍্যাঙ্ক থেকে মেরিট লেবেল তৈরি করা (1 → 1st, 2 → 2nd, 3 → 3rd, ইত্যাদি)
 function generateMeritLabel(rank) {
   if (!rank) return null;
@@ -299,7 +306,7 @@ function buildReportCardHTML(row){
   const attendance = row["attendance"] || "-";
 
   return `
-    <div class="report-outer">
+    <div class="report-outer ${getSubjectDensityClass(subjectCount)}" data-subject-count="${subjectCount}">
       <div class="report-inner">
 
         <div class="report-topbar">
@@ -675,52 +682,20 @@ async function downloadCurrentReportPDF(){
   }
 }
 
-// ============ প্রিন্টে সবসময় ঠিক ১টি A4 পেইজ নিশ্চিত করা ============
-// style.css এর @page { margin: 8mm; } অনুযায়ী A4 (297mm) থেকে উপরে-নিচে ৮mm করে বাদ দিলে
-// ব্যবহারযোগ্য উচ্চতা থাকে ২৮১mm। কনটেন্ট (বিষয় সংখ্যা ভেদে) এর চেয়ে বড় হলে,
-// পুরো কার্ডটি অনুপাত ঠিক রেখে ছোট করে ১ পেইজেই বসিয়ে দেওয়া হয় — যাতে
-// এক শিক্ষার্থীর রেজাল্ট কখনো ২ পেইজে না ছড়িয়ে পড়ে (একক প্রিন্ট ও এডমিনের
-// সব রেজাল্ট প্রিন্ট — উভয় ক্ষেত্রেই প্রযোজ্য)।
-const PRINT_PAGE_HEIGHT_MM = 281;
-const MM_TO_PX = 96 / 25.4;
-
-function fitCardToOnePage(card){
-  if(!card) return;
-  // আগের কোনো স্কেলিং থাকলে রিসেট করে আসল উচ্চতা মাপা হচ্ছে
-  card.style.transform = "";
-  card.style.marginBottom = "";
-  card.style.transformOrigin = "top center";
-
-  const naturalHeight = card.scrollHeight;
-  const maxHeightPx = PRINT_PAGE_HEIGHT_MM * MM_TO_PX;
-
-  if(naturalHeight > maxHeightPx){
-    const scale = maxHeightPx / naturalHeight;
-    const shrink = naturalHeight - (naturalHeight * scale);
-    card.style.transform = `scale(${scale})`;
-    // transform শুধু ভিজ্যুয়ালি ছোট করে, লেআউটে জায়গা একই থাকে —
-    // তাই নিচে যতটুকু ফাঁকা জায়গা তৈরি হলো, ততটুকু নেগেটিভ মার্জিন দিয়ে
-    // তুলে নেওয়া হচ্ছে, যাতে পেইজ ব্রেক ক্যালকুলেশনও ১ পেইজেই মিলে যায়
-    card.style.marginBottom = `-${shrink}px`;
-  }
-}
-
-function fitAllPrintCards(){
-  document.querySelectorAll("#reportContainer .report-outer, #adminPrintArea .report-outer")
-    .forEach(fitCardToOnePage);
-}
-
+// ============ A4 প্রিন্ট লেআউট ============
+// বিষয় বেশি হলে পুরো কার্ডকে ছোট না করে শুধু Grade Sheet-এর সারি ঘন করা হয়।
+// ফলে ৫টি বিষয় আর ১৫টি বিষয়—দুই ক্ষেত্রেই কার্ডের হেডার, তথ্য, স্বাক্ষর ও ফুটারের
+// আকার/অবস্থান একই থাকে। CSS-এর subjects-12/15/18 density class টেবিলকে মানিয়ে দেয়।
 function resetPrintCardFit(){
   document.querySelectorAll("#reportContainer .report-outer, #adminPrintArea .report-outer")
     .forEach(card => {
       card.style.transform = "";
       card.style.marginBottom = "";
+      card.style.transformOrigin = "";
     });
 }
 
-// window.print() যেভাবেই কল হোক (বাটন ক্লিক, Ctrl+P, এডমিন বাল্ক প্রিন্ট) —
-// beforeprint সবসময় ট্রিগার হয়, তাই এখানে একবার বসালেই সব জায়গায় কাজ করবে
-window.addEventListener("beforeprint", fitAllPrintCards);
+window.addEventListener("beforeprint", resetPrintCardFit);
 window.addEventListener("afterprint", resetPrintCardFit);
 
 // ============ ইভেন্ট লিসেনার ============
