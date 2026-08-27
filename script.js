@@ -316,6 +316,7 @@ function buildReportCardHTML(row){
           </div>
         </div>
 
+        <div class="info-block">
         <div class="section-title">Student Information</div>
         <table class="info-table">
           <tr>
@@ -335,7 +336,9 @@ function buildReportCardHTML(row){
             <td><span class="info-label">Merit Position:</span> <span class="info-value">${meritInfo && meritInfo.merit ? meritInfo.merit : '-'}</span></td>
           </tr>
         </table>
+        </div>
 
+        <div class="grade-block">
         <div class="section-title">Grade Sheet</div>
         <div class="table-scroll">
         <table class="marks-table">
@@ -356,8 +359,8 @@ function buildReportCardHTML(row){
           </tfoot>
         </table>
         </div>
-
         <p class="grade-scale">Grade Scale: A+ (৮০-১০০), A (৭০-৭৯), A- (৬০-৬৯), B (৫০-৫৯), C (৪০-৪৯), D (৩৩-৩৯), F (০-৩২)</p>
+        </div>
 
         <div class="remarks-box">
           <span>মন্তব্য (Remarks):</span> <em>${remarks}</em>
@@ -415,6 +418,8 @@ function parseOneSheet(url){
   });
 }
 
+const DATA_CACHE_KEY = "reportCardDataCache_v1";
+
 async function loadData(){
   const validUrls = (SHEET_CSV_URLS || []).filter(u => u && !u.includes("PASTE_"));
 
@@ -423,15 +428,41 @@ async function loadData(){
     return;
   }
 
-  classSelect.innerHTML = `<option value="">লোড হচ্ছে...</option>`;
+  // আগে সফলভাবে লোড হওয়া ডেটা ক্যাশে থাকলে সাথে সাথে সেটা দেখানো হচ্ছে,
+  // যাতে প্রতিবার Google Sheet থেকে ফ্রেশ ডেটা আসা পর্যন্ত "লোড হচ্ছে..."
+  // দেখিয়ে বসে থাকতে না হয় — পেছনে পেছনে আসল ডেটা লোড হয়ে সাইলেন্টলি
+  // আপডেট হয়ে যাবে
+  let hasCache = false;
+  try{
+    const cached = localStorage.getItem(DATA_CACHE_KEY);
+    if(cached){
+      const cachedRows = JSON.parse(cached);
+      if(Array.isArray(cachedRows) && cachedRows.length){
+        allRows = cachedRows;
+        calculateMeritForAllClasses();
+        populateClasses(classSelect);
+        populateClasses(adminClassSelect, true);
+        hasCache = true;
+      }
+    }
+  }catch(e){ /* ক্যাশ পড়তে সমস্যা হলে সাধারণ ফ্লো চলবে */ }
+
+  if(!hasCache){
+    classSelect.innerHTML = `<option value="">লোড হচ্ছে...</option>`;
+  }
 
   const results = await Promise.all(validUrls.map(parseOneSheet));
-  allRows = results.flat();
+  const freshRows = results.flat();
 
-  if(allRows.length === 0){
-    classSelect.innerHTML = `<option value="">⚠️ লোড ব্যর্থ হয়েছে, নিচে ক্লিক করুন</option><option value="__retry__">🔄 আবার চেষ্টা করুন</option>`;
-    return;
+  if(freshRows.length === 0){
+    if(!hasCache){
+      classSelect.innerHTML = `<option value="">⚠️ লোড ব্যর্থ হয়েছে, নিচে ক্লিক করুন</option><option value="__retry__">🔄 আবার চেষ্টা করুন</option>`;
+    }
+    return; // ক্যাশ থেকে যা দেখানো হয়েছে সেটাই থাকুক, পুরনো তথ্য না মুছে
   }
+
+  allRows = freshRows;
+  try{ localStorage.setItem(DATA_CACHE_KEY, JSON.stringify(freshRows)); }catch(e){}
 
   calculateMeritForAllClasses();
 
@@ -616,46 +647,19 @@ async function downloadCurrentReportPDF(){
     const pageHeight = pdf.internal.pageSize.getHeight();
     const imgRatio = canvas.height / canvas.width;
 
-    // ছবি A4 পেইজের চেয়ে লম্বা হলে একের বেশি পেইজে ভাগ করে বসানো হচ্ছে,
-    // যাতে নিচের অংশ কেটে বাদ না যায়
-    const fullRenderWidth = pageWidth;
-    const fullRenderHeight = pageWidth * imgRatio;
+    // সবসময় ১ পেইজেই বসাতে হবে — কনটেন্ট লম্বা হলে স্প্লিট না করে
+    // পুরো ছবিটাকে অনুপাত ঠিক রেখে ছোট করে (scale down) একটি মাত্র পেইজে ফিট করানো হচ্ছে
+    let renderWidth = pageWidth;
+    let renderHeight = pageWidth * imgRatio;
 
-    if (fullRenderHeight <= pageHeight) {
-      const y = (pageHeight - fullRenderHeight) / 2;
-      pdf.addImage(imgData, "PNG", 0, y, fullRenderWidth, fullRenderHeight);
-    } else {
-      // মাল্টি-পেইজ স্প্লিট
-      const pxPerMm = canvas.width / fullRenderWidth;
-      const pageHeightPx = pageHeight * pxPerMm;
-      let renderedPx = 0;
-      let pageIndex = 0;
-
-      while (renderedPx < canvas.height) {
-        const sliceHeightPx = Math.min(pageHeightPx, canvas.height - renderedPx);
-
-        const pageCanvas = document.createElement("canvas");
-        pageCanvas.width = canvas.width;
-        pageCanvas.height = sliceHeightPx;
-        const ctx = pageCanvas.getContext("2d");
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
-        ctx.drawImage(
-          canvas,
-          0, renderedPx, canvas.width, sliceHeightPx,
-          0, 0, canvas.width, sliceHeightPx
-        );
-
-        const sliceImgData = pageCanvas.toDataURL("image/png");
-        const sliceRenderHeight = sliceHeightPx / pxPerMm;
-
-        if (pageIndex > 0) pdf.addPage();
-        pdf.addImage(sliceImgData, "PNG", 0, 0, fullRenderWidth, sliceRenderHeight);
-
-        renderedPx += sliceHeightPx;
-        pageIndex++;
-      }
+    if (renderHeight > pageHeight) {
+      renderHeight = pageHeight;
+      renderWidth = pageHeight / imgRatio;
     }
+
+    const x = (pageWidth - renderWidth) / 2;
+    const y = (pageHeight - renderHeight) / 2;
+    pdf.addImage(imgData, "PNG", x, y, renderWidth, renderHeight);
 
     const name = (currentRow["name"] || "student").replace(/[^\w\u0980-\u09FF]+/g, "_");
     const roll = currentRow["roll"] || "";
@@ -671,6 +675,54 @@ async function downloadCurrentReportPDF(){
   }
 }
 
+// ============ প্রিন্টে সবসময় ঠিক ১টি A4 পেইজ নিশ্চিত করা ============
+// style.css এর @page { margin: 8mm; } অনুযায়ী A4 (297mm) থেকে উপরে-নিচে ৮mm করে বাদ দিলে
+// ব্যবহারযোগ্য উচ্চতা থাকে ২৮১mm। কনটেন্ট (বিষয় সংখ্যা ভেদে) এর চেয়ে বড় হলে,
+// পুরো কার্ডটি অনুপাত ঠিক রেখে ছোট করে ১ পেইজেই বসিয়ে দেওয়া হয় — যাতে
+// এক শিক্ষার্থীর রেজাল্ট কখনো ২ পেইজে না ছড়িয়ে পড়ে (একক প্রিন্ট ও এডমিনের
+// সব রেজাল্ট প্রিন্ট — উভয় ক্ষেত্রেই প্রযোজ্য)।
+const PRINT_PAGE_HEIGHT_MM = 281;
+const MM_TO_PX = 96 / 25.4;
+
+function fitCardToOnePage(card){
+  if(!card) return;
+  // আগের কোনো স্কেলিং থাকলে রিসেট করে আসল উচ্চতা মাপা হচ্ছে
+  card.style.transform = "";
+  card.style.marginBottom = "";
+  card.style.transformOrigin = "top center";
+
+  const naturalHeight = card.scrollHeight;
+  const maxHeightPx = PRINT_PAGE_HEIGHT_MM * MM_TO_PX;
+
+  if(naturalHeight > maxHeightPx){
+    const scale = maxHeightPx / naturalHeight;
+    const shrink = naturalHeight - (naturalHeight * scale);
+    card.style.transform = `scale(${scale})`;
+    // transform শুধু ভিজ্যুয়ালি ছোট করে, লেআউটে জায়গা একই থাকে —
+    // তাই নিচে যতটুকু ফাঁকা জায়গা তৈরি হলো, ততটুকু নেগেটিভ মার্জিন দিয়ে
+    // তুলে নেওয়া হচ্ছে, যাতে পেইজ ব্রেক ক্যালকুলেশনও ১ পেইজেই মিলে যায়
+    card.style.marginBottom = `-${shrink}px`;
+  }
+}
+
+function fitAllPrintCards(){
+  document.querySelectorAll("#reportContainer .report-outer, #adminPrintArea .report-outer")
+    .forEach(fitCardToOnePage);
+}
+
+function resetPrintCardFit(){
+  document.querySelectorAll("#reportContainer .report-outer, #adminPrintArea .report-outer")
+    .forEach(card => {
+      card.style.transform = "";
+      card.style.marginBottom = "";
+    });
+}
+
+// window.print() যেভাবেই কল হোক (বাটন ক্লিক, Ctrl+P, এডমিন বাল্ক প্রিন্ট) —
+// beforeprint সবসময় ট্রিগার হয়, তাই এখানে একবার বসালেই সব জায়গায় কাজ করবে
+window.addEventListener("beforeprint", fitAllPrintCards);
+window.addEventListener("afterprint", resetPrintCardFit);
+
 // ============ ইভেন্ট লিসেনার ============
 searchBtn.addEventListener("click", searchResult);
 rollInput.addEventListener("keydown", e => { if(e.key === "Enter") searchResult(); });
@@ -678,8 +730,8 @@ printBtn.addEventListener("click", () => window.print());
 downloadBtn.addEventListener("click", downloadCurrentReportPDF);
 document.getElementById("backBtn").addEventListener("click", () => goToPage("searchPage"));
 
-viewRoutineBtn.addEventListener("click", showRoutine);
-routineBackBtn.addEventListener("click", () => goToPage("searchPage"));
+if (viewRoutineBtn) viewRoutineBtn.addEventListener("click", showRoutine);
+if (routineBackBtn) routineBackBtn.addEventListener("click", () => goToPage("searchPage"));
 routinePrintBtn.addEventListener("click", () => window.print());
 
 adminBackBtn.addEventListener("click", () => {
@@ -699,5 +751,14 @@ function checkSecretAdminEntry(){
 }
 window.addEventListener("hashchange", checkSecretAdminEntry);
 checkSecretAdminEntry();
+
+// #routine দিয়ে সরাসরি রুটিন পেইজ খোলার জন্য (যেমনঃ index.html থেকে "পরীক্ষার রুটিন" বাটনে চাপ দিলে)
+function checkRoutineEntry(){
+  if(window.location.hash === "#routine"){
+    showRoutine();
+  }
+}
+window.addEventListener("hashchange", checkRoutineEntry);
+checkRoutineEntry();
 
 loadData();
