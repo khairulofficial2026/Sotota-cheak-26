@@ -334,9 +334,7 @@ select.input{
 }
 .btn-secondary:active{transform:scale(.98);}
 
-/* -------------------------------------------------------------------------
-   PRINT CONFIGURATION (ডায়নামিক স্পেসিং: সাবজেক্ট কম বা বেশি অনুযায়ী নিখুঁত ফিট)
--------------------------------------------------------------------------- */
+/* ---------------- PRINT MEDIA QUERIES (FIXED FOR SINGLE PAGE) ---------------- */
 @media print{
   *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important;}
   .no-print{display:none !important;}
@@ -346,8 +344,8 @@ select.input{
   .report-outer, 
   #adminPrintArea .print-page {
     width: 194mm !important;
-    height: 282mm !important;
-    max-height: 282mm !important;
+    height: auto !important;
+    max-height: none !important;
     margin: 0 auto !important;
     padding: 0 !important;
     box-shadow: none !important;
@@ -365,47 +363,45 @@ select.input{
     break-after: avoid !important;
   }
 
-  /* ফ্লেক্স কনটেইনার যেন কনটেন্টের পরিমাণ অনুযায়ী উচ্চতা নেয়, অতিরিক্ত ফাঁকা জায়গা নিচে আটকে না থাকে */
   .report-inner {
     width: 100% !important;
     height: auto !important;
-    min-height: 282mm !important;
+    min-height: 275mm !important;
     max-height: none !important;
     border: 2.5px solid #168f68 !important;
     border-radius: 12px !important;
-    padding: 6mm 10mm 4mm !important;
+    padding: 5mm 8mm 4mm !important;
     box-sizing: border-box !important;
     display: flex !important;
     flex-direction: column !important;
-    justify-content: flex-start !important;
+    justify-content: space-between !important;
     overflow: hidden !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
 
-  .report-topbar{margin-bottom:2mm;flex:0 0 auto;}
-  .info-block{margin-bottom:2mm;flex:0 0 auto;}
-  .grade-block{margin-bottom:2mm;flex:0 0 auto;}
-  .section-title{margin:1mm 0 2px;font-size:1.05rem;}
-  .grade-scale{margin:2px 0 0;font-size:.62rem;}
+  .report-topbar{margin-bottom:1.5mm;flex:0 0 auto;}
+  .info-block{margin-bottom:1.5mm;flex:0 0 auto;}
+  .grade-block{margin-bottom:1.5mm;flex:0 0 auto;}
+  .section-title{margin:1mm 0 2px;font-size:1rem;}
+  .grade-scale{margin:2px 0 0;font-size:.58rem;}
   
   .remarks-box{
-    margin:2mm 0;
+    margin:1.5mm 0;
     flex:0 0 auto;
-    padding:5px 8px;
-    font-size:.78rem;
+    padding:4px 6px;
+    font-size:.75rem;
     min-height:0;
   }
 
   .sign-row{
-    margin:8mm 0 2mm !important;
+    margin:4mm 0 2mm !important;
     flex:0 0 auto;
   }
 
-  /* ফুটার ফ্লেক্সের একদম নিচে চলে যাওয়ার পরিবর্তে কনটেন্টের ঠিক পরেই সুন্দরভাবে থাকবে */
   .report-footer{
     margin-top:auto !important;
-    padding-top:2mm !important;
+    padding-top:1.5mm !important;
     border-top:1px solid var(--line);
     flex:0 0 auto;
   }
@@ -417,14 +413,14 @@ select.input{
     border-collapse:collapse;
   }
   .marks-table th{
-    padding:3.5px 3px;
-    font-size:.68rem;
+    padding:3px 2px;
+    font-size:.65rem;
     border:1.2px solid #137b59;
   }
   .marks-table td{
-    padding:2.5px 3px;
-    font-size:.8rem;
-    line-height:1.1;
+    padding:2px 2px;
+    font-size:.75rem;
+    line-height:1.05;
     border:1px solid #9aa9a3;
   }
   
@@ -438,17 +434,8 @@ select.input{
   .marks-table th:nth-child(8),.marks-table td:nth-child(8){width:12%;}
   
   .marks-table td.subj-name{overflow-wrap:anywhere;word-break:break-word;}
-  .marks-table tfoot td{padding:2.5px 3px;font-weight:600;}
+  .marks-table tfoot td{padding:2px 2px;font-weight:600;}
   .card{box-shadow:none;}
-
-  .report-outer.subjects-12 .marks-table td{padding:2px 3px;}
-  .report-outer.subjects-12 .marks-table th{padding:2.5px 3px;font-size:.6rem;}
-
-  .report-outer.subjects-15 .marks-table td{padding:1.5px 2.5px;}
-  .report-outer.subjects-15 .marks-table th{padding:2px 2px;font-size:.56rem;}
-
-  .report-outer.subjects-18 .marks-table td{padding:1px 2px;}
-  .report-outer.subjects-18 .marks-table th{padding:1.5px;font-size:.52rem;}
 }
  
 .footer{text-align:center;padding:20px;font-size:.78rem;color:var(--muted);}
