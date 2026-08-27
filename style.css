@@ -1,9 +1,7 @@
 /* A4 পেজ সাইজ অপটিমাইজেশন প্রিন্টিংয়ের জন্য */
 @page {
-  size: A4;
-  margin: 8mm;
-  orphans: 3;
-  widows: 3;
+  size: A4 portrait;
+  margin: 4mm;
 }
 
 :root{
@@ -334,43 +332,54 @@ select.input{
 }
 .btn-secondary:active{transform:scale(.98);}
 
-/* ---------------- PRINT MEDIA QUERIES (FIXED FOR SINGLE PAGE) ---------------- */
-@media print{
-  *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important;}
-  .no-print{display:none !important;}
-  html,body{background:#fff;padding:0;margin:0;width:210mm;height:auto;overflow:hidden;}
-  .wrap,.wrap-report{padding:0 !important;max-width:100% !important;margin:0 !important;}
+/* -------------------------------------------------------------------------
+   PRINT MEDIA CONFIGURATION (কোনাো পেজ ব্রেক ছাড়া নিখুঁত এক পেজ ফিট)
+-------------------------------------------------------------------------- */
+@media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .no-print { display: none !important; }
+
+  html, body {
+    background: #fff !important;
+    width: 210mm;
+    height: 297mm;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .wrap, .wrap-report {
+    padding: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
 
   .report-outer, 
   #adminPrintArea .print-page {
-    width: 194mm !important;
-    height: auto !important;
-    max-height: none !important;
+    width: 202mm !important;
+    height: 289mm !important;
+    max-height: 289mm !important;
     margin: 0 auto !important;
     padding: 0 !important;
     box-shadow: none !important;
-    border: 0 !important;
-    box-sizing: border-box !important;
+    border: none !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
-    page-break-after: always !important;
-    break-after: page !important;
-  }
-
-  .print-page:last-child,
-  .report-outer:last-child {
     page-break-after: avoid !important;
     break-after: avoid !important;
+    overflow: hidden !important;
   }
 
   .report-inner {
     width: 100% !important;
-    height: auto !important;
-    min-height: 275mm !important;
-    max-height: none !important;
-    border: 2.5px solid #168f68 !important;
-    border-radius: 12px !important;
-    padding: 5mm 8mm 4mm !important;
+    height: 289mm !important;
+    max-height: 289mm !important;
+    border: 2px solid #168f68 !important;
+    border-radius: 8px !important;
+    padding: 3mm 5mm 2mm !important;
     box-sizing: border-box !important;
     display: flex !important;
     flex-direction: column !important;
@@ -378,66 +387,68 @@ select.input{
     overflow: hidden !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
   }
 
-  .report-topbar{margin-bottom:1.5mm;flex:0 0 auto;}
-  .info-block{margin-bottom:1.5mm;flex:0 0 auto;}
-  .grade-block{margin-bottom:1.5mm;flex:0 0 auto;}
-  .section-title{margin:1mm 0 2px;font-size:1rem;}
-  .grade-scale{margin:2px 0 0;font-size:.58rem;}
+  .report-topbar { margin-bottom: 1mm !important; flex: 0 0 auto; }
+  .info-block { margin-bottom: 1mm !important; flex: 0 0 auto; }
+  .grade-block { margin-bottom: 1mm !important; flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; }
+  .section-title { margin: 1px 0 !important; font-size: 0.9rem !important; }
+  .grade-scale { margin: 1px 0 !important; font-size: 0.52rem !important; }
   
-  .remarks-box{
-    margin:1.5mm 0;
-    flex:0 0 auto;
-    padding:4px 6px;
-    font-size:.75rem;
-    min-height:0;
+  .remarks-box {
+    margin: 1mm 0 !important;
+    flex: 0 0 auto;
+    padding: 3px 5px !important;
+    font-size: 0.7rem !important;
+    min-height: 0 !important;
   }
 
-  .sign-row{
-    margin:4mm 0 2mm !important;
-    flex:0 0 auto;
+  .sign-row {
+    margin: 2mm 0 1mm !important;
+    flex: 0 0 auto;
   }
 
-  .report-footer{
-    margin-top:auto !important;
-    padding-top:1.5mm !important;
-    border-top:1px solid var(--line);
-    flex:0 0 auto;
+  .report-footer {
+    margin-top: auto !important;
+    padding-top: 1mm !important;
+    border-top: 1px solid var(--line);
+    flex: 0 0 auto;
   }
 
-  .marks-table{
-    width:100%;
-    border-radius:0;
-    table-layout:fixed;
-    border-collapse:collapse;
+  .table-scroll { overflow: visible !important; width: 100% !important; }
+  .marks-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    table-layout: fixed !important;
   }
-  .marks-table th{
-    padding:3px 2px;
-    font-size:.65rem;
-    border:1.2px solid #137b59;
+  .marks-table th {
+    padding: 2px 2px !important;
+    font-size: 0.6rem !important;
+    border: 1px solid #137b59 !important;
   }
-  .marks-table td{
-    padding:2px 2px;
-    font-size:.75rem;
-    line-height:1.05;
-    border:1px solid #9aa9a3;
+  .marks-table td {
+    padding: 1.5px 2px !important;
+    font-size: 0.7rem !important;
+    line-height: 1 !important;
+    border: 1px solid #9aa9a3 !important;
   }
   
-  .marks-table th:first-child,.marks-table td:first-child{width:28%;}
-  .marks-table th:nth-child(2),.marks-table td:nth-child(2){width:10%;}
-  .marks-table th:nth-child(3),.marks-table td:nth-child(3){width:10%;}
-  .marks-table th:nth-child(4),.marks-table td:nth-child(4){width:10%;}
-  .marks-table th:nth-child(5),.marks-table td:nth-child(5){width:10%;}
-  .marks-table th:nth-child(6),.marks-table td:nth-child(6){width:10%;}
-  .marks-table th:nth-child(7),.marks-table td:nth-child(7){width:10%;}
-  .marks-table th:nth-child(8),.marks-table td:nth-child(8){width:12%;}
+  .marks-table th:first-child, .marks-table td:first-child { width: 28%; }
+  .marks-table th:nth-child(2), .marks-table td:nth-child(2) { width: 10%; }
+  .marks-table th:nth-child(3), .marks-table td:nth-child(3) { width: 10%; }
+  .marks-table th:nth-child(4), .marks-table td:nth-child(4) { width: 10%; }
+  .marks-table th:nth-child(5), .marks-table td:nth-child(5) { width: 10%; }
+  .marks-table th:nth-child(6), .marks-table td:nth-child(6) { width: 10%; }
+  .marks-table th:nth-child(7), .marks-table td:nth-child(7) { width: 10%; }
+  .marks-table th:nth-child(8), .marks-table td:nth-child(8) { width: 12%; }
   
-  .marks-table td.subj-name{overflow-wrap:anywhere;word-break:break-word;}
-  .marks-table tfoot td{padding:2px 2px;font-weight:600;}
-  .card{box-shadow:none;}
+  .marks-table td.subj-name { overflow-wrap: anywhere; word-break: break-word; }
+  .marks-table tfoot td { padding: 1.5px 2px !important; font-weight: 600; }
+  .card { box-shadow: none !important; }
 }
- 
+
 .footer{text-align:center;padding:20px;font-size:.78rem;color:var(--muted);}
 
 @media (max-width:600px){
