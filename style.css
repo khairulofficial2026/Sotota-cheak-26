@@ -334,16 +334,15 @@ select.input{
 }
 .btn-secondary:active{transform:scale(.98);}
 
-/* ----------------------------------------------------
-   PRINT CONFIGURATION (FIXED FOR SINGLE & BULK PRINT)
----------------------------------------------------- */
+/* -------------------------------------------------------------------------
+   PRINT CONFIGURATION (ডায়নামিক স্পেসিং: সাবজেক্ট কম বা বেশি অনুযায়ী নিখুঁত ফিট)
+-------------------------------------------------------------------------- */
 @media print{
   *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important;}
   .no-print{display:none !important;}
   html,body{background:#fff;padding:0;margin:0;width:210mm;height:auto;overflow:hidden;}
   .wrap,.wrap-report{padding:0 !important;max-width:100% !important;margin:0 !important;}
 
-  /* সিঙ্গেল ও এডমিন অল প্রিন্ট উভয়ের জন্য নির্দিষ্ট ও নিখুঁত সাইজ */
   .report-outer, 
   #adminPrintArea .print-page {
     width: 194mm !important;
@@ -360,25 +359,25 @@ select.input{
     break-after: page !important;
   }
 
-  /* শেষ পাতার পরে যাতে আর কোনো অতিরিক্ত ফাঁকা পৃষ্ঠা না আসে */
   .print-page:last-child,
   .report-outer:last-child {
     page-break-after: avoid !important;
     break-after: avoid !important;
   }
 
-  /* সবুজ বর্ডার একদম ফুটারের নিচে গিয়ে শেষ হবে */
+  /* ফ্লেক্স কনটেইনার যেন কনটেন্টের পরিমাণ অনুযায়ী উচ্চতা নেয়, অতিরিক্ত ফাঁকা জায়গা নিচে আটকে না থাকে */
   .report-inner {
     width: 100% !important;
-    height: 100% !important;
-    max-height: 282mm !important;
+    height: auto !important;
+    min-height: 282mm !important;
+    max-height: none !important;
     border: 2.5px solid #168f68 !important;
     border-radius: 12px !important;
     padding: 6mm 10mm 4mm !important;
     box-sizing: border-box !important;
     display: flex !important;
     flex-direction: column !important;
-    justify-content: space-between !important;
+    justify-content: flex-start !important;
     overflow: hidden !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
@@ -386,7 +385,7 @@ select.input{
 
   .report-topbar{margin-bottom:2mm;flex:0 0 auto;}
   .info-block{margin-bottom:2mm;flex:0 0 auto;}
-  .grade-block{margin-bottom:2mm;flex:1 1 auto;min-height:0;}
+  .grade-block{margin-bottom:2mm;flex:0 0 auto;}
   .section-title{margin:1mm 0 2px;font-size:1.05rem;}
   .grade-scale{margin:2px 0 0;font-size:.62rem;}
   
@@ -399,13 +398,13 @@ select.input{
   }
 
   .sign-row{
-    margin:3mm 0 2mm !important;
+    margin:8mm 0 2mm !important;
     flex:0 0 auto;
   }
 
-  /* ফুটার ঠিক লেখার পরেই শেষ হবে এবং বর্ডার তার নিচেই আটকাবে */
+  /* ফুটার ফ্লেক্সের একদম নিচে চলে যাওয়ার পরিবর্তে কনটেন্টের ঠিক পরেই সুন্দরভাবে থাকবে */
   .report-footer{
-    margin-top:2mm !important;
+    margin-top:auto !important;
     padding-top:2mm !important;
     border-top:1px solid var(--line);
     flex:0 0 auto;
@@ -442,7 +441,6 @@ select.input{
   .marks-table tfoot td{padding:2.5px 3px;font-weight:600;}
   .card{box-shadow:none;}
 
-  /* সাবজেক্ট বেশি থাকলে ফন্ট সাইজ স্বয়ংক্রিয়ভাবে মানিয়ে যাবে */
   .report-outer.subjects-12 .marks-table td{padding:2px 3px;}
   .report-outer.subjects-12 .marks-table th{padding:2.5px 3px;font-size:.6rem;}
 
