@@ -671,54 +671,6 @@ async function downloadCurrentReportPDF(){
   }
 }
 
-// ============ প্রিন্টে সবসময় ঠিক ১টি A4 পেইজ নিশ্চিত করা ============
-// style.css এর @page { margin: 8mm; } অনুযায়ী A4 (297mm) থেকে উপরে-নিচে ৮mm করে বাদ দিলে
-// ব্যবহারযোগ্য উচ্চতা থাকে ২৮১mm। কনটেন্ট (বিষয় সংখ্যা ভেদে) এর চেয়ে বড় হলে,
-// পুরো কার্ডটি অনুপাত ঠিক রেখে ছোট করে ১ পেইজেই বসিয়ে দেওয়া হয় — যাতে
-// এক শিক্ষার্থীর রেজাল্ট কখনো ২ পেইজে না ছড়িয়ে পড়ে (একক প্রিন্ট ও এডমিনের
-// সব রেজাল্ট প্রিন্ট — উভয় ক্ষেত্রেই প্রযোজ্য)।
-const PRINT_PAGE_HEIGHT_MM = 281;
-const MM_TO_PX = 96 / 25.4;
-
-function fitCardToOnePage(card){
-  if(!card) return;
-  // আগের কোনো স্কেলিং থাকলে রিসেট করে আসল উচ্চতা মাপা হচ্ছে
-  card.style.transform = "";
-  card.style.marginBottom = "";
-  card.style.transformOrigin = "top center";
-
-  const naturalHeight = card.scrollHeight;
-  const maxHeightPx = PRINT_PAGE_HEIGHT_MM * MM_TO_PX;
-
-  if(naturalHeight > maxHeightPx){
-    const scale = maxHeightPx / naturalHeight;
-    const shrink = naturalHeight - (naturalHeight * scale);
-    card.style.transform = `scale(${scale})`;
-    // transform শুধু ভিজ্যুয়ালি ছোট করে, লেআউটে জায়গা একই থাকে —
-    // তাই নিচে যতটুকু ফাঁকা জায়গা তৈরি হলো, ততটুকু নেগেটিভ মার্জিন দিয়ে
-    // তুলে নেওয়া হচ্ছে, যাতে পেইজ ব্রেক ক্যালকুলেশনও ১ পেইজেই মিলে যায়
-    card.style.marginBottom = `-${shrink}px`;
-  }
-}
-
-function fitAllPrintCards(){
-  document.querySelectorAll("#reportContainer .report-outer, #adminPrintArea .report-outer")
-    .forEach(fitCardToOnePage);
-}
-
-function resetPrintCardFit(){
-  document.querySelectorAll("#reportContainer .report-outer, #adminPrintArea .report-outer")
-    .forEach(card => {
-      card.style.transform = "";
-      card.style.marginBottom = "";
-    });
-}
-
-// window.print() যেভাবেই কল হোক (বাটন ক্লিক, Ctrl+P, এডমিন বাল্ক প্রিন্ট) —
-// beforeprint সবসময় ট্রিগার হয়, তাই এখানে একবার বসালেই সব জায়গায় কাজ করবে
-window.addEventListener("beforeprint", fitAllPrintCards);
-window.addEventListener("afterprint", resetPrintCardFit);
-
 // ============ ইভেন্ট লিসেনার ============
 searchBtn.addEventListener("click", searchResult);
 rollInput.addEventListener("keydown", e => { if(e.key === "Enter") searchResult(); });
@@ -726,8 +678,8 @@ printBtn.addEventListener("click", () => window.print());
 downloadBtn.addEventListener("click", downloadCurrentReportPDF);
 document.getElementById("backBtn").addEventListener("click", () => goToPage("searchPage"));
 
-if (viewRoutineBtn) viewRoutineBtn.addEventListener("click", showRoutine);
-if (routineBackBtn) routineBackBtn.addEventListener("click", () => goToPage("searchPage"));
+viewRoutineBtn.addEventListener("click", showRoutine);
+routineBackBtn.addEventListener("click", () => goToPage("searchPage"));
 routinePrintBtn.addEventListener("click", () => window.print());
 
 adminBackBtn.addEventListener("click", () => {
@@ -747,14 +699,5 @@ function checkSecretAdminEntry(){
 }
 window.addEventListener("hashchange", checkSecretAdminEntry);
 checkSecretAdminEntry();
-
-// #routine দিয়ে সরাসরি রুটিন পেইজ খোলার জন্য (যেমনঃ index.html থেকে "পরীক্ষার রুটিন" বাটনে চাপ দিলে)
-function checkRoutineEntry(){
-  if(window.location.hash === "#routine"){
-    showRoutine();
-  }
-}
-window.addEventListener("hashchange", checkRoutineEntry);
-checkRoutineEntry();
 
 loadData();
