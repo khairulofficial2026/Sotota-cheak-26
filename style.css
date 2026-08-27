@@ -99,7 +99,6 @@ body{
   margin:0 auto;
   padding:36px 16px 40px;
 }
-/* রেজাল্ট পেইজ A4-এর কাছাকাছি প্রশস্ত রাখা হয়েছে, যাতে কার্ডটি ছোট বাক্সের মতো না লাগে */
 .wrap-report{
   max-width:780px;
   padding:28px 16px 40px;
@@ -153,7 +152,6 @@ select.input{
 .btn-primary:active{transform:scale(.98);}
 .btn-primary:disabled{opacity:.6;}
 
-/* ভর্তি ফরম বাটনের আইকন ছোট করা */
 .btn-primary .icon{
   font-size:0.9rem;
 }
@@ -163,7 +161,6 @@ select.input{
   color:var(--red);font-weight:600;min-height:1em;
 }
 
-/* Result report card — reference-image style, sized to fill an A4 page nicely */
 .result-card.hidden{display:none;}
 .result-card{padding:0;background:transparent;box-shadow:none;}
 .report-outer{
@@ -172,19 +169,14 @@ select.input{
   border-radius:16px;
   padding:22px;
   box-shadow:0 16px 40px rgba(20,60,50,.14);
-  page-break-inside:avoid;
-  break-inside:avoid;
 }
 .report-inner{
   border:3px solid #17a06f;
   border-radius:14px;
   padding:22px 28px;
   position:relative;
-  page-break-inside:avoid;
-  break-inside:avoid;
 }
 
-/* টপবার: ছবি বক্স | স্কুলের নাম | রেজাল্ট স্ট্যাম্প */
 .report-topbar{
   display:flex;align-items:center;gap:18px;
   margin-bottom:10px;
@@ -211,7 +203,6 @@ select.input{
 .report-address{font-size:.92rem;color:#3a4a44;margin:0 0 3px;}
 .report-meta{font-size:.88rem;color:var(--muted);margin:0;font-weight:600;}
 
-/* ফলাফল + মেরিট একসাথে একটি স্ট্যাম্প-এ */
 .stamp-combo{
   flex-shrink:0;
   width:112px;
@@ -226,14 +217,13 @@ select.input{
   display:block;margin-top:5px;font-style:normal;
   font-size:.56rem;font-weight:800;letter-spacing:.2px;
   background:var(--merit-blue);color:#fff;border-radius:5px;padding:2px 3px;
-  -webkit-print-color-adjust:exact;print-color-adjust:exact;color-adjust:exact;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact;
 }
 .stamp-combo.pass{border-color:#17a06f;color:#0f8a52;}
 .stamp-combo.fail{border-color:var(--red);color:var(--red);}
 
 .info-block,.grade-block{display:block;}
 
-/* সেকশন টাইটেল: Student Information / Grade Sheet */
 .section-title{
   text-align:center;
   font-family:'Baloo Da 2',sans-serif;
@@ -246,12 +236,9 @@ select.input{
   margin:14px 0 8px;
 }
 
-/* শিক্ষার্থীর তথ্য টেবিল */
 .info-table{
   width:100%;border-collapse:collapse;
   margin-bottom:4px;
-  page-break-inside:avoid;
-  break-inside:avoid;
 }
 .info-table td{
   border:1.5px solid var(--ink);
@@ -272,8 +259,6 @@ select.input{
   overflow-x:auto;
   -webkit-overflow-scrolling:touch;
   margin:6px 0;
-  page-break-inside:avoid;
-  break-inside:avoid;
 }
 .marks-table{width:100%;min-width:0;border-collapse:collapse;font-size:.94rem;line-height:1.3;}
 .marks-table th{
@@ -287,8 +272,6 @@ select.input{
 .marks-table tfoot tr{font-weight:800;border-top:2px solid var(--ink);}
 .marks-table tfoot td{padding:8px 6px;border:1px solid var(--line);}
 
-
-/* প্রফেশনাল rounded table frame — ভেতরের grid পরিষ্কার থাকবে */
 .marks-table{
   border:1.5px solid #137b59;
   border-radius:8px;
@@ -307,19 +290,14 @@ select.input{
   margin:6px 0;padding:12px 16px;min-height:48px;
   border:2px solid var(--ink);
   border-radius:9px;font-size:1rem;
-  page-break-inside:avoid;
-  break-inside:avoid;
   line-height:1.3;
 }
 .remarks-box span{font-weight:700;color:var(--ink);}
 .remarks-box em{color:#3a4a44;font-style:normal;display:block;margin-top:3px;line-height:1.3;}
 
-/* স্বাক্ষরের জন্য যথেষ্ট ফাঁকা জায়গা রাখা হয়েছে লাইনের ওপরে */
 .sign-row{
   display:flex;justify-content:space-between;
   margin:48px 0 4px;gap:16px;flex-wrap:wrap;
-  page-break-inside:avoid;
-  break-inside:avoid;
 }
 .sign-row div{
   flex:1;min-width:110px;text-align:center;
@@ -336,12 +314,10 @@ select.input{
   border-top:1px solid var(--line);padding-top:5px;margin-top:8px;
 }
 
-/* Bengali Number Font Customization */
 .bn-number {
   font-family: 'Tiro Bangla', serif;
 }
 
-/* ডাউনলোড/প্রিন্ট বাটন */
 .result-actions{
   display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;
 }
@@ -358,69 +334,80 @@ select.input{
 }
 .btn-secondary:active{transform:scale(.98);}
 
+/* ----------------------------------------------------
+   PRINT CONFIGURATION (FIXED FOR SINGLE & BULK PRINT)
+---------------------------------------------------- */
 @media print{
   *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important;}
   .no-print{display:none !important;}
-  html,body{background:#fff;padding:0;margin:0;height:auto;}
+  html,body{background:#fff;padding:0;margin:0;width:210mm;height:auto;overflow:hidden;}
   .wrap,.wrap-report{padding:0 !important;max-width:100% !important;margin:0 !important;}
 
-  /* A4 প্রিন্টেবল এরিয়া (৮মিমি মার্জিন বাদে) = ১৯৪mm x ২৮১mm ।
-     এখানে আর জায়গা "সমান ভাগ" করা হচ্ছে না (তাতে রিমার্কস ছোট-বড়
-     হলে স্বাক্ষরের জায়গা এলোমেলো হয়ে যাচ্ছিল) — বরং প্রতিটা সেকশনের
-     মাঝে একটা নির্দিষ্ট (fixed) গ্যাপ রাখা হয়েছে, বিশেষ করে স্বাক্ষরের
-     উপরে সবসময় একই পরিমাণ ফাঁকা জায়গা থাকবে। কনটেন্ট যদি পুরো পেজ না
-     ভরে, তাহলে বাড়তি ফাঁকা জায়গাটা শুধু ফুটারের ঠিক উপরে গিয়ে জমা
-     হবে (margin-top:auto) — এতে লেআউট সবসময় স্থির/প্রেডিক্টেবল থাকবে
-     এবং কখনো দ্বিতীয় পেজেও যাবে না */
-  .report-outer{
-    box-shadow:none;
-    border:0;
-    padding:0;
-    margin:0 auto;
-    width:194mm;
-    max-width:194mm;
-    height:auto;
-    display:block;
-    page-break-inside:avoid;
-    break-inside:avoid;
-  }
-  .report-inner{
-    width:100%;
-    min-height:0;
-    border:2.5px solid #168f68;
-    border-radius:14px;
-    padding:8mm 12mm 6mm;
-    box-sizing:border-box;
-    display:flex;
-    flex-direction:column;
-    overflow:hidden;
-    page-break-inside:avoid;
-    break-inside:avoid;
+  /* সিঙ্গেল ও এডমিন অল প্রিন্ট উভয়ের জন্য নির্দিষ্ট ও নিখুঁত সাইজ */
+  .report-outer, 
+  #adminPrintArea .print-page {
+    width: 194mm !important;
+    height: 282mm !important;
+    max-height: 282mm !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: 0 !important;
+    box-sizing: border-box !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    page-break-after: always !important;
+    break-after: page !important;
   }
 
-  .report-topbar{margin-bottom:4mm;flex:0 0 auto;}
-  .info-block{margin-bottom:4mm;flex:0 0 auto;}
-  .grade-block{margin-bottom:3mm;flex:0 0 auto;min-height:0;}
-  .section-title{margin:0 0 5px;}
-  .grade-scale{margin:4px 0 0;font-size:.68rem;}
+  /* শেষ পাতার পরে যাতে আর কোনো অতিরিক্ত ফাঁকা পৃষ্ঠা না আসে */
+  .print-page:last-child,
+  .report-outer:last-child {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+
+  /* সবুজ বর্ডার একদম ফুটারের নিচে গিয়ে শেষ হবে */
+  .report-inner {
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 282mm !important;
+    border: 2.5px solid #168f68 !important;
+    border-radius: 12px !important;
+    padding: 6mm 10mm 4mm !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    overflow: hidden !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .report-topbar{margin-bottom:2mm;flex:0 0 auto;}
+  .info-block{margin-bottom:2mm;flex:0 0 auto;}
+  .grade-block{margin-bottom:2mm;flex:1 1 auto;min-height:0;}
+  .section-title{margin:1mm 0 2px;font-size:1.05rem;}
+  .grade-scale{margin:2px 0 0;font-size:.62rem;}
+  
   .remarks-box{
-    margin:0;
+    margin:2mm 0;
     flex:0 0 auto;
-    padding:7px 9px;
-    font-size:.82rem;
+    padding:5px 8px;
+    font-size:.78rem;
     min-height:0;
   }
 
-  /* ৩টি স্বাক্ষর Grade Sheet/Remarks-এর ঠিক নিচে থাকবে; subject কম হলেও আর নিচে ঠেলে যাবে না */
   .sign-row{
-    margin:18mm 0 0;
+    margin:3mm 0 2mm !important;
     flex:0 0 auto;
   }
 
-  /* Footer এখন signature-এর পরে অল্প gap-এ থাকবে; তাই নিচে অযথা বিশাল ফাঁকা থাকবে না */
+  /* ফুটার ঠিক লেখার পরেই শেষ হবে এবং বর্ডার তার নিচেই আটকাবে */
   .report-footer{
-    margin-top:8mm;
-    padding-top:3mm;
+    margin-top:2mm !important;
+    padding-top:2mm !important;
+    border-top:1px solid var(--line);
     flex:0 0 auto;
   }
 
@@ -428,69 +415,42 @@ select.input{
     width:100%;
     border-radius:0;
     table-layout:fixed;
-    page-break-inside:avoid;
-    break-inside:avoid;
-    font-size:.88rem;
-    line-height:1.16;
     border-collapse:collapse;
   }
   .marks-table th{
-    padding:5px 4px;
-    border-radius:0;
-    font-size:.72rem;
-    line-height:1.08;
+    padding:3.5px 3px;
+    font-size:.68rem;
     border:1.2px solid #137b59;
   }
   .marks-table td{
-    padding:4px 4px;
-    border-radius:0;
-    line-height:1.12;
-    vertical-align:middle;
+    padding:2.5px 3px;
+    font-size:.8rem;
+    line-height:1.1;
     border:1px solid #9aa9a3;
   }
-  .marks-table th:first-child,.marks-table td:first-child{width:29%;}
-  .marks-table th:nth-child(2),.marks-table td:nth-child(2){width:9%;}
+  
+  .marks-table th:first-child,.marks-table td:first-child{width:28%;}
+  .marks-table th:nth-child(2),.marks-table td:nth-child(2){width:10%;}
   .marks-table th:nth-child(3),.marks-table td:nth-child(3){width:10%;}
-  .marks-table th:nth-child(4),.marks-table td:nth-child(4){width:9%;}
+  .marks-table th:nth-child(4),.marks-table td:nth-child(4){width:10%;}
   .marks-table th:nth-child(5),.marks-table td:nth-child(5){width:10%;}
-  .marks-table th:nth-child(6),.marks-table td:nth-child(6){width:9%;}
-  .marks-table th:nth-child(7),.marks-table td:nth-child(7){width:9%;}
-  .marks-table th:nth-child(8),.marks-table td:nth-child(8){width:15%;}
+  .marks-table th:nth-child(6),.marks-table td:nth-child(6){width:10%;}
+  .marks-table th:nth-child(7),.marks-table td:nth-child(7){width:10%;}
+  .marks-table th:nth-child(8),.marks-table td:nth-child(8){width:12%;}
+  
   .marks-table td.subj-name{overflow-wrap:anywhere;word-break:break-word;}
-  .marks-table tfoot td{padding:4px 3px;font-weight:600;}
-  .remarks-box{page-break-inside:avoid;break-inside:avoid;}
-  .sign-row{page-break-inside:avoid;break-inside:avoid;}
+  .marks-table tfoot td{padding:2.5px 3px;font-weight:600;}
   .card{box-shadow:none;}
 
-  /* বিষয়ের সংখ্যা অনুযায়ী শুধু Grade Sheet compact হবে */
-  .report-outer.subjects-12 .marks-table td{padding:2.5px 3px;}
-  .report-outer.subjects-12 .marks-table th{padding:3px 3px;font-size:.62rem;}
-  .report-outer.subjects-12 .grade-scale{font-size:.64rem;}
+  /* সাবজেক্ট বেশি থাকলে ফন্ট সাইজ স্বয়ংক্রিয়ভাবে মানিয়ে যাবে */
+  .report-outer.subjects-12 .marks-table td{padding:2px 3px;}
+  .report-outer.subjects-12 .marks-table th{padding:2.5px 3px;font-size:.6rem;}
 
-  .report-outer.subjects-15 .marks-table{font-size:.71rem;line-height:1.05;}
-  .report-outer.subjects-15 .marks-table td{padding:2px 2.5px;}
-  .report-outer.subjects-15 .marks-table th{padding:2.5px 2px;font-size:.59rem;}
-  .report-outer.subjects-15 .grade-scale{font-size:.61rem;}
-  .report-outer.subjects-15 .remarks-box{font-size:.76rem;padding:6px 8px;}
-  .report-outer.subjects-15 .sign-row{margin-top:15mm;}
+  .report-outer.subjects-15 .marks-table td{padding:1.5px 2.5px;}
+  .report-outer.subjects-15 .marks-table th{padding:2px 2px;font-size:.56rem;}
 
-  .report-outer.subjects-18 .marks-table{font-size:.67rem;line-height:1.02;}
-  .report-outer.subjects-18 .marks-table td{padding:1.5px 2px;}
-  .report-outer.subjects-18 .marks-table th{padding:2px;font-size:.56rem;}
-  .report-outer.subjects-18 .grade-scale{font-size:.58rem;}
-  .report-outer.subjects-18 .remarks-box{font-size:.72rem;padding:5px 7px;}
-  .report-outer.subjects-18 .sign-row{margin-top:12mm;}
-
-  .print-page{
-    page-break-after:always;
-    break-after:page;
-    page-break-inside:avoid;
-    break-inside:avoid;
-  }
-  .print-page:last-child{
-    page-break-after:auto;
-    break-after:auto;
-  }
+  .report-outer.subjects-18 .marks-table td{padding:1px 2px;}
+  .report-outer.subjects-18 .marks-table th{padding:1.5px;font-size:.52rem;}
 }
  
 .footer{text-align:center;padding:20px;font-size:.78rem;color:var(--muted);}
@@ -558,20 +518,13 @@ select.input{
   .routine-rules li{font-size:.72rem;}
 }
 
-/* একাধিক রেজাল্ট কার্ড প্রিন্টের জন্য (এডমিন প্যানেল) */
 #adminPrintArea{margin-top:20px;}
 .print-page{margin-bottom:24px;}
-@media print{
-  .print-page{page-break-after:always;}
-  .print-page:last-child{page-break-after:auto;}
-}
 
-/* রেজাল্ট কার্ডের সব বাংলা টেক্সট Hind Siliguri এ */
 .report-inner {
   font-family: 'Hind Siliguri', sans-serif;
 }
 
-/* বাংলা সংখ্যার বিভিন্ন ফন্ট অপশন */
 .bn-number.tiro-bangla-font {
   font-family: 'Tiro Bangla', serif;
   font-weight: 400;
@@ -587,13 +540,6 @@ select.input{
   font-weight: 700;
 }
 
-/* কাস্টম ফন্টের জন্য স্পেস (যদি ইউজ করতে চাও) */
-.bn-number.custom-font {
-  font-family: 'Custom Bangla Font', serif;
-}
-
-
-/* Grade Sheet: square/straight professional frame — no curved corners */
 .grade-block,
 .grade-block .table-scroll,
 .grade-block .marks-table,
@@ -606,111 +552,7 @@ select.input{
   border-radius: 0 !important;
 }
 
-/* Keep the table edge crisp without changing the outer report's rounded frame */
 .grade-block .marks-table {
   border: 1px solid #137b59;
   overflow: hidden;
-}
-
-
-/* v7: readable Grade Sheet + strict one-A4-page layout */
-@media print {
-  .report-outer {
-    width: 194mm !important;
-    height: 281mm !important;
-    max-width: 194mm !important;
-    max-height: 281mm !important;
-    overflow: hidden !important;
-    box-sizing: border-box !important;
-    page-break-before: auto !important;
-    page-break-after: always !important;
-    break-before: auto !important;
-    break-after: page !important;
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-  }
-
-  .report-inner {
-    width: 194mm !important;
-    height: 281mm !important;
-    max-height: 281mm !important;
-    overflow: hidden !important;
-    box-sizing: border-box !important;
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-  }
-
-  /* Normal subject count: make letters/cells comfortably readable */
-  .report-outer.subjects-normal .marks-table {
-    font-size: .92rem !important;
-    line-height: 1.18 !important;
-  }
-  .report-outer.subjects-normal .marks-table th {
-    font-size: .75rem !important;
-    padding: 5px 4px !important;
-  }
-  .report-outer.subjects-normal .marks-table td {
-    padding: 4.5px 4px !important;
-  }
-
-  /* 12–14 subjects */
-  .report-outer.subjects-12 .marks-table {
-    font-size: .86rem !important;
-    line-height: 1.12 !important;
-  }
-  .report-outer.subjects-12 .marks-table th {
-    font-size: .70rem !important;
-    padding: 4px 3px !important;
-  }
-  .report-outer.subjects-12 .marks-table td {
-    padding: 3.5px 3px !important;
-  }
-
-  /* 15–17 subjects */
-  .report-outer.subjects-15 .marks-table {
-    font-size: .81rem !important;
-    line-height: 1.08 !important;
-  }
-  .report-outer.subjects-15 .marks-table th {
-    font-size: .65rem !important;
-    padding: 3.5px 2.5px !important;
-  }
-  .report-outer.subjects-15 .marks-table td {
-    padding: 3px 2.5px !important;
-  }
-
-  /* 18+ subjects: only the table becomes compact enough to remain one page */
-  .report-outer.subjects-18 .marks-table {
-    font-size: .75rem !important;
-    line-height: 1.03 !important;
-  }
-  .report-outer.subjects-18 .marks-table th {
-    font-size: .60rem !important;
-    padding: 2.5px 2px !important;
-  }
-  .report-outer.subjects-18 .marks-table td {
-    padding: 2px !important;
-  }
-
-  /* Never allow table text to force a second page */
-  .marks-table td, .marks-table th {
-    overflow-wrap: anywhere;
-    word-break: break-word;
-  }
-
-  /* Admin bulk print: every card is exactly one page */
-  #adminPrintArea .print-page {
-    width: 194mm !important;
-    height: 281mm !important;
-    max-height: 281mm !important;
-    overflow: hidden !important;
-    page-break-after: always !important;
-    break-after: page !important;
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-  }
-  #adminPrintArea .print-page:last-child {
-    page-break-after: auto !important;
-    break-after: auto !important;
-  }
 }
