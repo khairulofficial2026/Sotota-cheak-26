@@ -1,7 +1,7 @@
-/* A4 পেজ সাইজ অপটিমাইজেশন প্রিন্টিংয়ের জন্য */
+/* A4 পেজ সাইজ ও প্রিন্ট অপটিমাইজেশন */
 @page {
   size: A4 portrait;
-  margin: 5mm;
+  margin: 0;
 }
 
 :root{
@@ -333,7 +333,7 @@ select.input{
 .btn-secondary:active{transform:scale(.98);}
 
 /* -------------------------------------------------------------------------
-   PRINT MEDIA CONFIGURATION (ওয়েব স্ক্রিনের মতো হুবহু এক পেজে প্রিন্ট রাখার জন্য)
+   STRICT PRINT CONFIGURATION (স্ক্রিনের হুবহু ডিজাইন এক পেজে ফিক্স করার জন্য)
 -------------------------------------------------------------------------- */
 @media print {
   * {
@@ -344,11 +344,11 @@ select.input{
 
   html, body {
     background: #fff !important;
-    width: 100% !important;
-    height: auto !important;
+    width: 210mm !important;
+    height: 297mm !important;
     margin: 0 !important;
     padding: 0 !important;
-    overflow: visible !important;
+    overflow: hidden !important;
   }
 
   .wrap, .wrap-report {
@@ -357,72 +357,81 @@ select.input{
     margin: 0 !important;
   }
 
+  /* মূল কার্ডটিকে প্রিন্টে ঠিকমতো বসানোর জন্য স্কেলিং ও ফিক্সড সাইজ */
   .report-outer, 
   #adminPrintArea .print-page {
-    width: 100% !important;
-    max-width: 100% !important;
-    height: auto !important;
-    margin: 0 auto !important;
-    padding: 0 !important;
+    width: 210mm !important;
+    height: 297mm !important;
+    max-height: 297mm !important;
+    margin: 0 !important;
+    padding: 8mm 10mm !important;
     box-shadow: none !important;
     border: none !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
     page-break-after: avoid !important;
     break-after: avoid !important;
+    overflow: hidden !important;
   }
 
   .report-inner {
     width: 100% !important;
-    height: auto !important;
+    height: 100% !important;
+    max-height: 281mm !important;
     border: 2px solid #168f68 !important;
-    border-radius: 14px !important;
-    padding: 16px 20px !important;
+    border-radius: 12px !important;
+    padding: 14px 18px !important;
     box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
 
-  .report-topbar { margin-bottom: 10px !important; }
-  .info-block { margin-bottom: 4px !important; }
-  .grade-block { margin-bottom: 6px !important; }
-  .section-title { margin: 12px 0 6px !important; font-size: 1.1rem !important; }
-  .grade-scale { margin: 6px 0 !important; font-size: 0.75rem !important; }
+  .report-topbar { margin-bottom: 4px !important; flex: 0 0 auto; }
+  .info-block { margin-bottom: 2px !important; flex: 0 0 auto; }
+  .grade-block { margin-bottom: 2px !important; flex: 1 1 auto; }
+  .section-title { margin: 6px 0 4px !important; font-size: 1.05rem !important; }
+  .grade-scale { margin: 2px 0 !important; font-size: 0.7rem !important; }
   
   .remarks-box {
-    margin: 6px 0 !important;
-    padding: 10px 14px !important;
-    font-size: 0.95rem !important;
-    min-height: 40px !important;
+    margin: 2px 0 !important;
+    padding: 8px 12px !important;
+    font-size: 0.88rem !important;
+    min-height: 35px !important;
+    flex: 0 0 auto;
   }
 
   .sign-row {
-    margin: 35px 0 4px !important;
+    margin: 15px 0 2px !important;
+    flex: 0 0 auto;
   }
 
   .report-footer {
-    margin-top: 8px !important;
-    padding-top: 5px !important;
+    margin-top: 2px !important;
+    padding-top: 3px !important;
     border-top: 1px solid var(--line);
+    flex: 0 0 auto;
   }
 
   .table-scroll { overflow: visible !important; width: 100% !important; }
   .marks-table {
     width: 100% !important;
     border-collapse: collapse !important;
-    font-size: 0.88rem !important;
+    font-size: 0.82rem !important;
   }
   .marks-table th {
-    padding: 6px 4px !important;
-    font-size: 0.75rem !important;
+    padding: 4px 3px !important;
+    font-size: 0.7rem !important;
     border: 1px solid #0a6e3f !important;
   }
   .marks-table td {
-    padding: 4px 4px !important;
+    padding: 3px 3px !important;
     border: 1px solid var(--line) !important;
   }
   
-  .marks-table tfoot td { padding: 6px 4px !important; font-weight: 800; }
+  .marks-table tfoot td { padding: 4px 3px !important; font-weight: 800; }
   .card { box-shadow: none !important; }
 }
 
@@ -526,6 +535,6 @@ select.input{
 }
 
 .grade-block .marks-table {
-  border: 1px solid #137b59;
+  border:1px solid #137b59;
   overflow: hidden;
 }
