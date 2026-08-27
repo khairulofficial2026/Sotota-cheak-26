@@ -231,6 +231,8 @@ select.input{
 .stamp-combo.pass{border-color:#17a06f;color:#0f8a52;}
 .stamp-combo.fail{border-color:var(--red);color:var(--red);}
 
+.info-block,.grade-block{display:block;}
+
 /* সেকশন টাইটেল: Student Information / Grade Sheet */
 .section-title{
   text-align:center;
@@ -316,7 +318,7 @@ select.input{
   font-size:.85rem;color:var(--muted);line-height:1;
 }
 .sign-line{
-  display:block;border-top:1.5px solid var(--ink);
+  display:block;height:2px;background:var(--ink);
   margin-bottom:8px;
 }
 
@@ -327,7 +329,6 @@ select.input{
 }
 
 /* Bengali Number Font Customization */
-/* এই ক্লাস গুলোতে শুধু বাংলা সংখ্যা (০,১,২,৩...) এর জন্য কাস্টম ফন্ট */
 .bn-number {
   font-family: 'Tiro Bangla', serif;
 }
@@ -352,19 +353,48 @@ select.input{
 @media print{
   *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important;}
   .no-print{display:none !important;}
-  body{background:#fff;padding:0;margin:0;}
-  .wrap{padding:0;max-width:100%;margin:0;}
+  html,body{background:#fff;padding:0;margin:0;height:auto;}
+  .wrap,.wrap-report{padding:0 !important;max-width:100% !important;margin:0 !important;}
+
+  /* A4 প্রিন্টেবল এরিয়া (৮মিমি মার্জিন বাদে) = ১৯৪mm x ২৮১mm ।
+     এখানে আর জায়গা "সমান ভাগ" করা হচ্ছে না (তাতে রিমার্কস ছোট-বড়
+     হলে স্বাক্ষরের জায়গা এলোমেলো হয়ে যাচ্ছিল) — বরং প্রতিটা সেকশনের
+     মাঝে একটা নির্দিষ্ট (fixed) গ্যাপ রাখা হয়েছে, বিশেষ করে স্বাক্ষরের
+     উপরে সবসময় একই পরিমাণ ফাঁকা জায়গা থাকবে। কনটেন্ট যদি পুরো পেজ না
+     ভরে, তাহলে বাড়তি ফাঁকা জায়গাটা শুধু ফুটারের ঠিক উপরে গিয়ে জমা
+     হবে (margin-top:auto) — এতে লেআউট সবসময় স্থির/প্রেডিক্টেবল থাকবে
+     এবং কখনো দ্বিতীয় পেজেও যাবে না */
   .report-outer{
-    box-shadow:none;border:none;padding:0;
-    page-break-inside:avoid;
-    break-inside:avoid;
+    box-shadow:none;border:none;padding:0;margin:0 auto;
+    width:194mm;height:281mm;max-width:194mm;
+    display:flex;
+    page-break-inside:avoid;break-inside:avoid;
   }
   .report-inner{
+    width:100%;
     border:2px solid #17a06f;
-    page-break-inside:avoid;
-    break-inside:avoid;
+    padding:11mm 15mm;
+    box-sizing:border-box;
+    display:flex;flex-direction:column;
+    page-break-inside:avoid;break-inside:avoid;
   }
+
+  .report-topbar{margin-bottom:6mm;}
+  .info-block{margin-bottom:6mm;}
+  .grade-block{margin-bottom:5mm;}
+  .section-title{margin:0 0 6px;}
+  .grade-scale{margin:5px 0 0;}
+  .remarks-box{margin:0;}
+
+  /* স্বাক্ষরের উপরে সবসময় একটা নিশ্চিত/স্থির ফাঁকা জায়গা */
+  .sign-row{margin:18mm 0 0;}
+
+  /* বাড়তি সব ফাঁকা জায়গা এখানে জমা হয়ে ফুটারকে পেজের একদম নিচে ঠেলে দেবে */
+  .report-footer{margin-top:auto;padding-top:4mm;}
+
   .marks-table{page-break-inside:avoid;break-inside:avoid;}
+  .marks-table td{padding:4px 6px;}
+  .marks-table th{padding:6px 6px;}
   .remarks-box{page-break-inside:avoid;break-inside:avoid;}
   .sign-row{page-break-inside:avoid;break-inside:avoid;}
   .card{box-shadow:none;}
@@ -446,12 +476,6 @@ select.input{
 /* রেজাল্ট কার্ডের সব বাংলা টেক্সট Hind Siliguri এ */
 .report-inner {
   font-family: 'Hind Siliguri', sans-serif;
-}
-
-/* Bengali Number Font Customization */
-/* শুধু বাংলা সংখ্যা (०,१,२,३...) এর জন্য কাস্টম ফন্ট */
-.bn-number {
-  font-family: 'Tiro Bangla', serif;
 }
 
 /* বাংলা সংখ্যার বিভিন্ন ফন্ট অপশন */
